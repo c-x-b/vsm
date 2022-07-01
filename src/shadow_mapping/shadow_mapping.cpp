@@ -310,7 +310,7 @@ void genTexture(GLuint& texture,GLuint& fbo,unsigned int num)
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -360,7 +360,7 @@ void renderScene(Shader &shader,Model& mymodel)
     //render model
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));
+    model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.0f));
     model = glm::scale(model, glm::vec3(0.02));
     shader.setMat4("model", model);
     mymodel.Draw(shader);
