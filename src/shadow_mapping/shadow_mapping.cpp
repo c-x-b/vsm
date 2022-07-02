@@ -40,8 +40,8 @@ float lastFrame = 0.0f;
 unsigned int planeVAO;
 
 //c_power 
-float pos_power =5.0f;
-float neg_power = 10.0f;
+float pos_power =40.0f;
+float neg_power = 40.0f;
 float amout = 3.0f;
 int main()
 {
