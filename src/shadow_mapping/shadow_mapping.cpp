@@ -40,8 +40,11 @@ float lastFrame = 0.0f;
 unsigned int planeVAO;
 
 //c_power 
-float pos_power =40.0f;
+float pos_power =35.0f;
 float neg_power = 5.0f;
+
+//blur use
+bool bluruse = true;
 int main()
 {
     // glfw: initialize and configure
@@ -191,37 +194,40 @@ int main()
             renderScene(simpleDepthShader,mymodel);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        //1.5 blur the shadowmap
-        //on x_direction
-        
-        blur.use();
-        blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-        blur.setInt("type", 0);
-        blur.setFloat("pos_power", pos_power);
-        blur.setFloat("neg_power", neg_power);
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, blurfbo);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
-        //glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, blurmap, 0);
-        renderScene(blur, mymodel);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        //
-        ////on y_direction
-        blur.use();
-        blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-        blur.setInt("type", 1);
-        blur.setFloat("pos_power", pos_power);
-        blur.setFloat("neg_power", neg_power);
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, blurmap);
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthMap, 0);
-        renderScene(blur, mymodel);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        if (bluruse) {
+            //1.5 blur the shadowmap
+            //on x_direction
+            blur.use();
+            blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+            blur.setInt("type", 0);
+            blur.setFloat("pos_power", pos_power);
+            blur.setFloat("neg_power", neg_power);
+            glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+            glBindFramebuffer(GL_FRAMEBUFFER, blurfbo);
+            glClear(GL_DEPTH_BUFFER_BIT);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, depthMap);
+            //glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, blurmap, 0);
+            renderScene(blur, mymodel);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            //
+            ////on y_direction
+            blur.use();
+            blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+            blur.setInt("type", 1);
+            blur.setFloat("pos_power", pos_power);
+            blur.setFloat("neg_power", neg_power);
+            glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+            glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+            glClear(GL_DEPTH_BUFFER_BIT);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, blurmap);
+            glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthMap, 0);
+            renderScene(blur, mymodel);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
 
         //// reset viewport
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);

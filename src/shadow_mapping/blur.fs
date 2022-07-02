@@ -10,9 +10,9 @@ in vec4 FragPosLightSpace;
 
 void main()
 {             
-    int range =5;
-    float t=2.5f;
-    float weight[11];
+    int range =3;
+    float t=0.5f;
+    float weight[7];
     float weightAll=0.0f;
     for(int i=-range;i<=range;i++){
         weight[i+range]=exp(-i*i/(2*t*t))/t;
@@ -25,7 +25,7 @@ void main()
     vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
     // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
-    if(type==0)//x_direction
+    if(type==1)//x_direction
     {
         for(int i=-range;i<=range;i++)
         {
