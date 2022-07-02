@@ -40,9 +40,8 @@ float lastFrame = 0.0f;
 unsigned int planeVAO;
 
 //c_power 
-float pos_power =5.0f;
-float neg_power = 10.0f;
-float amout = 3.0f;
+float pos_power =40.0f;
+float neg_power = 5.0f;
 int main()
 {
     // glfw: initialize and configure
@@ -189,9 +188,6 @@ int main()
             glClear(GL_DEPTH_BUFFER_BIT);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, woodTexture);
-            simpleDepthShader.setFloat("pos_power", pos_power);
-            simpleDepthShader.setFloat("neg_power", neg_power);
-            simpleDepthShader.setFloat("amout", amout);
             renderScene(simpleDepthShader,mymodel);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -201,6 +197,8 @@ int main()
         blur.use();
         blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
         blur.setInt("type", 0);
+        blur.setFloat("pos_power", pos_power);
+        blur.setFloat("neg_power", neg_power);
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, blurfbo);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -214,17 +212,19 @@ int main()
         blur.use();
         blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
         blur.setInt("type", 1);
+        blur.setFloat("pos_power", pos_power);
+        blur.setFloat("neg_power", neg_power);
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glClear(GL_DEPTH_BUFFER_BIT);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, blurmap);
-        //glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthMap, 0);
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthMap, 0);
         renderScene(blur, mymodel);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        
+        //
 
-        // reset viewport
+        //// reset viewport
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -245,7 +245,6 @@ int main()
         //set c_power
         shader.setFloat("pos_power", pos_power);
         shader.setFloat("neg_power", neg_power);
-        shader.setFloat("amout", amout);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, woodTexture);
         glActiveTexture(GL_TEXTURE1);
@@ -334,11 +333,11 @@ void renderScene(Shader &shader,Model& mymodel)
 
     //render model
 
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.5f, 1.8f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.02f));
-    shader.setMat4("model", model);
-    mymodel.Draw(shader);
+    //model = glm::mat4(1.0f);
+    //model = glm::translate(model, glm::vec3(0.5f, 1.8f, 0.0f));
+    //model = glm::scale(model, glm::vec3(0.02f));
+    //shader.setMat4("model", model);
+    //mymodel.Draw(shader);
 
 }
 

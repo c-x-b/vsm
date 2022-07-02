@@ -16,7 +16,7 @@ uniform vec3 viewPos;
 
 uniform float pos_power;
 uniform float neg_power;
-uniform float amout;
+
 vec2 warpDepth(float depth)
 {
     depth = 2.0f * depth - 1.0f;
@@ -58,18 +58,19 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     // calculate bias (based on depth map resolution and slope)
     vec3 normal = normalize(fs_in.Normal);
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
-    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.005);
     vec2 wDepth = warpDepth(currentDepth);
     //EVSM  
     vec4 moments = texture(shadowMap, projCoords.xy).xyzw;
-    
-    vec2 posMoments = vec2(moments.x*amout, moments.y*amout*amout);
-    vec2 negMoments = vec2(moments.z*amout, moments.w*amout*amout);
-    vec2 depthScale = 0.0001f * vec2(pos_power, neg_power) * wDepth;
+    moments=2.0f*moments-1.0f;
+    vec2 posMoments = vec2(exp(pos_power*moments.x), exp(pos_power*2*moments.y));
+    vec2 negMoments = vec2(-exp(-neg_power*moments.z), exp(-neg_power*2*moments.w));
+    vec2 depthScale = 0.00001f * vec2(pos_power, neg_power) * wDepth;
     vec2 minVariance = depthScale * depthScale;
     float posResult = Chebyshev(posMoments, wDepth.x, minVariance.x);
     float negResult = Chebyshev(negMoments, wDepth.y, minVariance.y);
     float shadow = min(posResult, negResult);
+
     /*
     //reflect to [Minshadow,1]
     const float Minshadow=0.1;
