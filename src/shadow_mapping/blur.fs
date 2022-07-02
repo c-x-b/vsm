@@ -8,7 +8,7 @@ in vec4 FragPosLightSpace;
 
 void main()
 {             
-    int range = 10;
+    int range = 5;
     //gl_FragDepth = gl_FragCoord.z;
     float mean=0;
     float variance=0;
