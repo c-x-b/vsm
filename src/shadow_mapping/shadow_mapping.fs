@@ -59,6 +59,19 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     vec3 normal = normalize(fs_in.Normal);
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
     float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.005);
+    
+    //ESM
+    float Mapdepth=texture(shadowMap, projCoords.xy).x;
+    Mapdepth=2.0f*Mapdepth-1.0f;
+    Mapdepth=exp(pos_power*Mapdepth);
+    currentDepth=2.0f*currentDepth-1.0f;
+    currentDepth=exp(-pos_power*currentDepth);
+    float shadow=0.0;
+
+    shadow=Mapdepth*currentDepth;
+    if (shadow>1.0f)
+        shadow=1.0f;
+    /*
     vec2 wDepth = warpDepth(currentDepth);
     //EVSM  
     vec4 moments = texture(shadowMap, projCoords.xy).xyzw;
@@ -70,6 +83,8 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float posResult = Chebyshev(posMoments, wDepth.x, minVariance.x);
     float negResult = Chebyshev(negMoments, wDepth.y, minVariance.y);
     float shadow = min(posResult, negResult);
+    */
+
 
     /*
     //reflect to [Minshadow,1]

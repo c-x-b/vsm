@@ -20,9 +20,6 @@ void main()
     }
     //gl_FragDepth = gl_FragCoord.z;
     float mean=0;
-    float variance=0;
-    float mean_second=0;
-    float variance_second=0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
     // perform perspective divide
     vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
@@ -35,9 +32,6 @@ void main()
             float depth=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).x;
             depth=depth*2.0f-1.0f;
             mean+=exp(depth*pos_power)*weight[i+range];
-            variance+=mean*mean*weight[i+range];
-            mean_second+=exp(-depth*neg_power)*weight[i+range];
-            variance_second+=mean_second*mean_second*weight[i+range];
         }
     }
     else//y_direction
@@ -47,18 +41,10 @@ void main()
             float depth=texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).x;
             depth=depth*2.0f-1.0f;
             mean+=exp(depth*pos_power)*weight[i+range];
-            variance+=mean*mean*weight[i+range];
-            mean_second+=exp(-depth*neg_power)*weight[i+range];
-            variance_second+=mean_second*mean_second*weight[i+range];
         }
     }
     mean/=weightAll;
-    variance/=weightAll;
-    mean_second/=weightAll;
-    variance_second/=weightAll;
     mean=log(mean)/pos_power*0.5f+0.5f;
-    variance=log(variance)/pos_power*0.25f+0.5f;
-    mean_second=log(mean_second)/-neg_power*0.5f+0.5f;
-    variance_second=log(variance_second)/-neg_power*0.25f+0.5f;
-    FragColor = vec4(mean,variance,mean_second,variance_second);
+
+    FragColor = vec4(mean,0.0f,0.0f,0.0f);
 }

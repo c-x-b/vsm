@@ -222,7 +222,6 @@ int main()
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthMap, 0);
         renderScene(blur, mymodel);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        //
 
         //// reset viewport
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
@@ -333,11 +332,11 @@ void renderScene(Shader &shader,Model& mymodel)
 
     //render model
 
-    //model = glm::mat4(1.0f);
-    //model = glm::translate(model, glm::vec3(0.5f, 1.8f, 0.0f));
-    //model = glm::scale(model, glm::vec3(0.02f));
-    //shader.setMat4("model", model);
-    //mymodel.Draw(shader);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.5f, 1.8f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.02f));
+    shader.setMat4("model", model);
+    mymodel.Draw(shader);
 
 }
 
