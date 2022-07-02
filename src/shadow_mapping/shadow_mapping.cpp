@@ -165,10 +165,6 @@ int main()
         // -----
         processInput(window);
 
-        // change light position over time
-        lightPos.x = sin(glfwGetTime()) * 3.0f;
-        lightPos.z = cos(glfwGetTime()) * 2.0f;
-        lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
 
         // render
         // ------
@@ -202,30 +198,30 @@ int main()
         //1.5 blur the shadowmap
         //on x_direction
         
-        //blur.use();
-        //blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-        //blur.setInt("type", 0);
-        //glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        //glBindFramebuffer(GL_FRAMEBUFFER, blurfbo);
-        //glClear(GL_DEPTH_BUFFER_BIT);
-        //glActiveTexture(GL_TEXTURE0);
-        //glBindTexture(GL_TEXTURE_2D, depthMap);
-        ////glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, blurmap, 0);
-        //renderScene(blur, mymodel);
-        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        blur.use();
+        blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        blur.setInt("type", 0);
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, blurfbo);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        //glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, blurmap, 0);
+        renderScene(blur, mymodel);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         //
         ////on y_direction
-        //blur.use();
-        //blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-        //blur.setInt("type", 1);
-        //glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        //glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        //glClear(GL_DEPTH_BUFFER_BIT);
-        //glActiveTexture(GL_TEXTURE0);
-        //glBindTexture(GL_TEXTURE_2D, blurmap);
-        ////glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthMap, 0);
-        //renderScene(blur, mymodel);
-        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        blur.use();
+        blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        blur.setInt("type", 1);
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, blurmap);
+        //glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, depthMap, 0);
+        renderScene(blur, mymodel);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         
 
         // reset viewport
@@ -289,7 +285,7 @@ void genTexture(GLuint& texture,GLuint& fbo,unsigned int num)
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -322,9 +318,9 @@ void renderScene(Shader &shader,Model& mymodel)
     glDrawArrays(GL_TRIANGLES, 0, 6);
     // cubes
     
-    /*
+    
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0));
+    model = glm::translate(model, glm::vec3(2.0f, 0.1f, 1.0));
     model = glm::scale(model, glm::vec3(0.5f));
     shader.setMat4("model", model);
     renderCube();
@@ -334,12 +330,12 @@ void renderScene(Shader &shader,Model& mymodel)
     model = glm::scale(model, glm::vec3(0.25));
     shader.setMat4("model", model);
     renderCube();
-    */
+    
 
     //render model
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(12.0f, 0.8f, 0.0f));
+    model = glm::translate(model, glm::vec3(0.5f, 1.8f, 0.0f));
     model = glm::scale(model, glm::vec3(0.02f));
     shader.setMat4("model", model);
     mymodel.Draw(shader);

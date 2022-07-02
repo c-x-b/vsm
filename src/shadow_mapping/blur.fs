@@ -8,7 +8,7 @@ in vec4 FragPosLightSpace;
 
 void main()
 {             
-    int range = 5;
+    int range = 10;
     //gl_FragDepth = gl_FragCoord.z;
     float mean=0;
     float variance=0;
@@ -24,9 +24,9 @@ void main()
         for(int i=-range;i<=range;i++)
         {
             mean+=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).x;
-            variance+=mean*mean;
-            mean_second+=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).y;
-            variance_second+=mean_second*mean_second;
+            variance+=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).y;
+            mean_second+=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).z;
+            variance_second+=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).w;
         }
         mean/=float(2*range+1);
         variance/=float(2*range+1);
