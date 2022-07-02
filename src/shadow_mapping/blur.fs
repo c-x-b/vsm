@@ -3,12 +3,22 @@ out vec4 FragColor;
 
 uniform sampler2D shadowMap;
 uniform int type;
+uniform float pos_power;
+uniform float neg_power;
 
 in vec4 FragPosLightSpace;
 
 void main()
 {             
-    int range = 5;
+    int range =5;
+    float t=float(range)/2;
+    float weight[11];
+    float weightAll=0.0f;
+    for(int i=-range;i<=range;i++){
+        weight[i+range]=exp(-i*i/(2*t*t))/t;
+        //weight[i+range]=1;
+        weightAll+=weight[i+range];
+    }
     //gl_FragDepth = gl_FragCoord.z;
     float mean=0;
     float variance=0;
@@ -23,29 +33,40 @@ void main()
     {
         for(int i=-range;i<=range;i++)
         {
-            mean+=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).x;
-            variance+=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).y;
-            mean_second+=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).z;
-            variance_second+=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).w;
+            float depth=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).x;
+            float x=exp(depth*pos_power);
+            float y=exp(-depth*neg_power);
+            mean+=x*weight[i+range];
+            variance+=x*x*weight[i+range];
+            mean_second+=y*weight[i+range];
+            variance_second+=y*y*weight[i+range];
         }
-        mean/=float(2*range+1);
-        variance/=float(2*range+1);
-        mean_second/=float(2*range+1);
-        variance_second/=float(2*range+1);
     }
     else//y_direction
     {
         for(int i=-range;i<=range;i++)
         {
-            mean+=texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).x;
-            variance+=texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).y;
-            mean_second+=texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).z;
-            variance_second+=texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).w;
+            float depthx=texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).x;
+            float depthy=texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).y;
+            float vx = texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).z;
+            float vy = texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).w;
+            float x=exp(depthx*pos_power);
+            float y=exp(depthy*pos_power);
+            float z = exp(-vx*neg_power);
+            float w = exp(-vy*neg_power);
+            mean+=x*weight[i+range];
+            variance+=y*weight[i+range];
+            mean_second+=z*weight[i+range];
+            variance_second+=w*weight[i+range];
         }
-        mean/=float(2*range+1);
-        variance/=float(2*range+1);
-        mean_second/=float(2*range+1);
-        variance_second/=float(2*range+1);
     }
+    mean/=weightAll;
+    variance/=weightAll;
+    mean_second/=weightAll;
+    variance_second/=weightAll;
+    mean=log(mean)/pos_power;
+    variance=log(variance)/pos_power;
+    mean_second=log(mean_second)/-neg_power;
+    variance_second=log(variance_second)/-neg_power;
     FragColor = vec4(mean,variance,mean_second,variance_second);
 }
