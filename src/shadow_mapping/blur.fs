@@ -10,9 +10,9 @@ in vec4 FragPosLightSpace;
 
 void main()
 {             
-    int range =5;
-    float t=2.5f;
-    float weight[7];
+    int range =3;
+    float t=float(range)/2;
+    float weight[11];
     float weightAll=0.0f;
     for(int i=-range;i<=range;i++){
         weight[i+range]=exp(-i*i/(2*t*t))/t;
