@@ -12,7 +12,7 @@ void main()
 {             
     int range =5;
     float t=2.5f;
-    float weight[11];
+    float weight[7];
     float weightAll=0.0f;
     for(int i=-range;i<=range;i++){
         weight[i+range]=exp(-i*i/(2*t*t))/t;
@@ -28,16 +28,18 @@ void main()
     vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
     // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
-    if(type==0)//x_direction
+    if(type==1)//x_direction
     {
         for(int i=-range;i<=range;i++)
         {
             float depth=texture(shadowMap,projCoords.xy+i*vec2(1,0)*texelSize).x;
             depth=depth*2.0f-1.0f;
-            mean+=exp(depth*pos_power)*weight[i+range];
-            variance+=mean*mean*weight[i+range];
-            mean_second+=exp(-depth*neg_power)*weight[i+range];
-            variance_second+=mean_second*mean_second*weight[i+range];
+            float x=exp(depth*pos_power);
+            float y=exp(-depth*neg_power);
+            mean+=x*weight[i+range];
+            variance+=x*x*weight[i+range];
+            mean_second+=y*weight[i+range];
+            variance_second+=y*y*weight[i+range];
         }
     }
     else//y_direction
@@ -46,10 +48,12 @@ void main()
         {
             float depth=texture(shadowMap,projCoords.xy+i*vec2(0,1)*texelSize).x;
             depth=depth*2.0f-1.0f;
-            mean+=exp(depth*pos_power)*weight[i+range];
-            variance+=mean*mean*weight[i+range];
-            mean_second+=exp(-depth*neg_power)*weight[i+range];
-            variance_second+=mean_second*mean_second*weight[i+range];
+            float x=exp(depth*pos_power);
+            float y=exp(-depth*neg_power);
+            mean+=x*weight[i+range];
+            variance+=x*x*weight[i+range];
+            mean_second+=y*weight[i+range];
+            variance_second+=y*y*weight[i+range];
         }
     }
     mean/=weightAll;
