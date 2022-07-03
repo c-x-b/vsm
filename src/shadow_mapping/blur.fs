@@ -16,10 +16,8 @@ void main()
     float weightAll=0.0f;
     for(int i=-range;i<=range;i++){
         weight[i+range]=exp(-i*i/(2*t*t))/t;
-        //weight[i+range]=1;
         weightAll+=weight[i+range];
     }
-    //gl_FragDepth = gl_FragCoord.z;
     float mean=0;
     float variance=0;
     float mean_second=0;

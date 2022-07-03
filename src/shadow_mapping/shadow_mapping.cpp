@@ -207,8 +207,8 @@ int main()
         //glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, blurmap, 0);
         renderScene(blur, mymodel);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        //
-        ////on y_direction
+       
+        //on y_direction
         blur.use();
         blur.setMat4("lightSpaceMatrix", lightSpaceMatrix);
         blur.setInt("type", 1);
@@ -224,7 +224,7 @@ int main()
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         //
 
-        //// reset viewport
+        // reset viewport
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -283,7 +283,6 @@ void genTexture(GLuint& texture,GLuint& fbo,unsigned int num)
     // create depth texture
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -295,12 +294,9 @@ void genTexture(GLuint& texture,GLuint& fbo,unsigned int num)
     // attach depth texture as FBO's depth buffer
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+num, GL_TEXTURE_2D, texture, 0);
     glDrawBuffer(fbo);
     glReadBuffer(fbo);
-    //glDrawBuffer(GL_NONE);
-    //glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
