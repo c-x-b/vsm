@@ -10,8 +10,8 @@ in vec4 FragPosLightSpace;
 
 void main()
 {             
-    int range =5;
-    float t=2.5f;
+    int range =3;
+    float t=0.5f;
     float weight[11];
     float weightAll=0.0f;
     for(int i=-range;i<=range;i++){
